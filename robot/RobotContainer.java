@@ -10,6 +10,7 @@ import frc.robot.commands.Climb;
 import frc.robot.commands.Drive;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.GoLaunch;
+import frc.robot.commands.IntakeAutoCommand;
 import frc.robot.commands.ReverseWrist;
 import frc.robot.commands.TakeIn;
 import frc.robot.commands.Autonomi.FourNote_rightfirst_2;
@@ -91,7 +92,7 @@ private Climb climbcommand = new Climb(m_Climber);
     autoChooser.addOption("ThreeNote - (Center) (leftfirst)", m_threeNote_leftfirst_2);
     autoChooser.addOption("THE FOUR NOTE", m_fourNote_rightfirst_2);
     SmartDashboard.putData("Auto Chooser: ", autoChooser);
-    SmartDashboard.putString("Selected Auto: ", autoChooser.getSelected().toString());
+
     // Configure the trigger bindings
     configureBindings();
     m_Intake.setDefaultCommand(intakecommand);
@@ -153,6 +154,7 @@ private Climb climbcommand = new Climb(m_Climber);
    */
  
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    SmartDashboard.putString("Selected Auto: ", autoChooser.getSelected().toString());
+    return new IntakeAutoCommand(m_Intake, 3, 0, true);
   }
 }
