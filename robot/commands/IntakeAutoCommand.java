@@ -18,7 +18,7 @@ public class IntakeAutoCommand extends Command {
   private boolean pullIn;
   private double delay;
   private Timer timer = new Timer();
-  private double time = timer.get();
+  private double time;
 
   /**
    * Creates a new ExampleCommand.
@@ -28,19 +28,21 @@ public class IntakeAutoCommand extends Command {
   public IntakeAutoCommand(Intake intake, double intakeDuration, double delay, boolean pullIn) {
     m_Intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(intake);
+    addRequirements(m_Intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     timer.start();
-
+    System.out.println("Intake Command Started");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+      System.out.println("Intake Command Continued");
+      time = timer.get();
     if(pullIn == true && time >= delay) {
     m_Intake.pull(true, false);
     }
@@ -51,16 +53,19 @@ public class IntakeAutoCommand extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    System.out.println("Intake Command Ended");
+  }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     if(time > intakeDuration) {
-      return false;
+      
+      return true;
     }
     else{
-    return true;
+    return false;
     }
   }
 }
