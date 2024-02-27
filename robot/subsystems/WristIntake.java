@@ -16,6 +16,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.trajectory.ExponentialProfile.State;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +29,12 @@ public class WristIntake extends SubsystemBase {
   private double intakeError;
   private double intakeSetpointB = -160;
   private double intakeSetpointA = -20;
+  private State currentState = State.ShootPos;
+  enum State {
+    ShootPos,
+    IntakePos,
+    AmpPos
+  }
 
   final double wheelCircumference = 0.478778720406;
 
@@ -42,27 +49,18 @@ public class WristIntake extends SubsystemBase {
   }
 
   public void wrist(boolean Bpressed, boolean Apressed) {
-   /*  if (Bpressed) { 
-      spark1.set(-0.3); 
-    }
-    else if (Apressed) { 
-      spark1.set(0.3); 
-    }
-    else { 
-      spark1.stopMotor(); 
-    } 
-    SmartDashboard.putNumber("intake error", intakeError);
-    SmartDashboard.putNumber("spark input (-1 to 1)", intakeError/50);
-    SmartDashboard.putNumber("Intake Encoder Position", getAnglePosition());
-    SmartDashboard.putNumber("Intake Encoder Velocity", m_intakeEncoder.getVelocity());
-    SmartDashboard.putBoolean("Intake In", intakeIn);
-  }*/
+  if(Apressed) {
+    currentState = State.ShootPos;
+  }
+  else if (Bpressed) {
+    currentState = State.IntakePos;
+  }
 
-    if (Bpressed && (getAnglePosition() > -160)) {
+    if (currentState == State.ShootPos) {
       intakeError = getAnglePosition() - intakeSetpointB;
       spark1.set(-intakeError/360);
 
-    } else if (Apressed && (getAnglePosition() < -20)) {      
+    } else if (currentState == State.IntakePos) {      
       intakeError = getAnglePosition() - intakeSetpointA;
       spark1.set(-intakeError/360);
     } else {
